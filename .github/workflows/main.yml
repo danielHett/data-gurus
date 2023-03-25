@@ -8,32 +8,20 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      CLEANED_DATA_FILENAME: ${{ env.CLEANED_DATA_FILENAME }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       # Checkout our repo
       - uses: actions/checkout@v3
       
-      # Installing Python v3.10 and AWS CLI v2
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10' 
-      - uses: unfor19/install-aws-cli-action@v1
+      # Installing AWS CLI v2
+      - uses: unfor19/install-aws-cli-action@v2
       
       - run: ls -a
       
-      - run: sudo rm -rf /usr/share/dotnet
-      - run: sudo rm -rf /opt/ghc
-      - run: sudo rm -rf "/usr/local/share/boost"
-      - run: sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+      - run: sudo apt-get install unzip
+      - run: unzip $CLEANED_DATA_FILENAME -d staged
       
-      - run: aws s3 cp s3://default-data/default_data.csv ./data/
-      
-      # install pandas
-      - run: pip install pandas
-      - run: python clean_script.py
-      
-      - run: aws s3 cp cleaned_data.csv s3://staged-for-training
-    
-    
-  
+      # Upload to s3
+      - run: aws s3 cp staged/$CLEANED_DATA_FILENAME s3://staged-for-training
