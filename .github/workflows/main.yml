@@ -3,18 +3,25 @@ run-name: ${{ github.actor }} is cleaning the data and pushing to S3!
 on: workflow_dispatch 
 jobs:
   # This job will install required libs, clean the data, and stage cleaned data to an S3 Bucket
-  clean-data:
+  clean-and-upload:
+    env: 
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      CLEANED_DATA_FILENAME: ${{ env.CLEANED_DATA_FILENAME }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      # Installing Python v3.10 and AWS CLI v2
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10' 
-      - uses: unfor19/install-aws-cli-action@v1
+      # Checkout our repo
+      - uses: actions/checkout@v3
       
-      - run: echo $CLEANED_DATA_PATH
-      - run: echo $DATA_BUCKET_POSTFIX
-      - run: python clean_script.py
-    
-    
-  
+      # Installing AWS CLI v2
+      - uses: unfor19/install-aws-cli-action@v2
+      
+      - run: ls -a
+      
+      - run: sudo apt-get install unzip
+      - run: unzip $CLEANED_DATA_FILENAME -d staged
+      
+      # Upload to s3
+      - run: aws s3 cp staged/$CLEANED_DATA_FILENAME s3://staged-for-training
