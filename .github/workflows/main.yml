@@ -3,7 +3,11 @@ run-name: ${{ github.actor }} is cleaning the data and pushing to S3!
 on: workflow_dispatch 
 jobs:
   # This job will install required libs, clean the data, and stage cleaned data to an S3 Bucket
-  clean-data:
+  clean-and-upload:
+    env: 
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     runs-on: ubuntu-latest
     steps:
       # Checkout our repo
@@ -16,10 +20,14 @@ jobs:
       - uses: unfor19/install-aws-cli-action@v1
       
       - run: ls -a
-      - run: echo "$CLEANED_DATA_PATH"
-      - run: echo "$DATA_BUCKET_POSTFIX"
+      
+      - run: aws s3 cp s3://default-data/default_data.csv ./data/
+      
+      # install pandas
+      - run: pip install pandas
       - run: python clean_script.py
-      - run: aws s3 ls s3://
+      
+      - run: aws s3 cp cleaned_data.csv s3://staged-for-training
     
     
   
