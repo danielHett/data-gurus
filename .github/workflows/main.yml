@@ -8,7 +8,12 @@ jobs:
   clean-data:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ github.actor }}
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+      - run: cd
+      - run: if test -f "data/default_data.csv"; then echo "the csv exists!"; else "the csv does not exist!"; exit 1; fi
+      - run: python clean-script.py
     
     
   
