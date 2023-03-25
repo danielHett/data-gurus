@@ -22,6 +22,11 @@ jobs:
       
       - run: ls -a
       
+      - run: sudo rm -rf /usr/share/dotnet
+      - run: sudo rm -rf /opt/ghc
+      - run: sudo rm -rf "/usr/local/share/boost"
+      - run: sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+      
       - run: aws s3 cp s3://default-data/default_data.csv ./data/
       
       # install pandas
