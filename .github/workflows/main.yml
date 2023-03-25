@@ -14,7 +14,7 @@ jobs:
       
       - run: echo $CLEANED_DATA_PATH
       - run: echo $DATA_BUCKET_POSTFIX
-      - run: python clean-script.py
+      - run: python clean_script.py
     
     
   
