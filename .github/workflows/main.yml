@@ -1,9 +1,6 @@
 name: clean-data
 run-name: ${{ github.actor }} is cleaning the data and pushing to S3!
-on:
-  push:
-    paths:
-      - 'clean_script.py' 
+on: workflow_dispatch 
 jobs:
   # This job will install required libs, clean the data, and stage cleaned data to an S3 Bucket
   clean-data:
