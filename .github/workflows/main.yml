@@ -26,6 +26,7 @@ jobs:
       - run: echo "$CLEANED_DATA_PATH"
       - run: echo "$DATA_BUCKET_POSTFIX"
       - run: python clean_script.py
+      - run: aws s3 ls s3://
     
     
   
