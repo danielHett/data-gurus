@@ -1,0 +1,14 @@
+name: clean-data
+run-name: ${{ github.actor }} is cleaning the data and pushing to S3!
+on:
+  push:
+    paths:
+      - 'clean_script.py' 
+jobs:
+  clean-data:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ github.actor }}
+    
+    
+  
