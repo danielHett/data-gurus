@@ -6,6 +6,9 @@ jobs:
   clean-data:
     runs-on: ubuntu-latest
     steps:
+      # Checkout our repo
+      - uses: actions/checkout@v3
+      
       # Installing Python v3.10 and AWS CLI v2
       - uses: actions/setup-python@v4
         with:
