@@ -1,19 +1,31 @@
 name: clean-data
 run-name: ${{ github.actor }} is cleaning the data and pushing to S3!
-on:
-  push:
-    paths:
-      - 'clean_script.py' 
+on: workflow_dispatch 
+
+env: 
+  ACCESS_KEY: ${{ secret.ACCESS_KEY }}
+  SECRET_ACCESS_KEY: ${{ secret.SECRET_ACCESS_KEY }}
+  CLEANED_DATA_PATH: ${{ env.CLEANED_DATA_PATH }}
+  DATA_BUCKET_POSTFIX: ${{ env.DATA_BUCKET_POSTFIX }} 
+  
 jobs:
+  # This job will install required libs, clean the data, and stage cleaned data to an S3 Bucket
   clean-data:
     runs-on: ubuntu-latest
     steps:
+      # Checkout our repo
+      - uses: actions/checkout@v3
+      
+      # Installing Python v3.10 and AWS CLI v2
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10' 
-      - run: cd
-      - run: if test -f "data/default_data.csv"; then echo "the csv exists!"; else "the csv does not exist!"; exit 1; fi
-      - run: python clean-script.py
+      - uses: unfor19/install-aws-cli-action@v1
+      
+      - run: ls -a
+      - run: echo "$CLEANED_DATA_PATH"
+      - run: echo "$DATA_BUCKET_POSTFIX"
+      - run: python clean_script.py
     
     
   
