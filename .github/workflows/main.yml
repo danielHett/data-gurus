@@ -1,13 +1,6 @@
 name: clean-data
 run-name: ${{ github.actor }} is cleaning the data and pushing to S3!
 on: workflow_dispatch 
-
-env: 
-  ACCESS_KEY: ${{ secret.ACCESS_KEY }}
-  SECRET_ACCESS_KEY: ${{ secret.SECRET_ACCESS_KEY }}
-  CLEANED_DATA_PATH: ${{ env.CLEANED_DATA_PATH }}
-  DATA_BUCKET_POSTFIX: ${{ env.DATA_BUCKET_POSTFIX }} 
-  
 jobs:
   # This job will install required libs, clean the data, and stage cleaned data to an S3 Bucket
   clean-data:
@@ -26,6 +19,7 @@ jobs:
       - run: echo "$CLEANED_DATA_PATH"
       - run: echo "$DATA_BUCKET_POSTFIX"
       - run: python clean_script.py
+      - run: aws s3 ls s3://
     
     
   
