@@ -20,7 +20,11 @@ jobs:
       - uses: unfor19/install-aws-cli-action@v1
       
       - run: ls -a
+      
+      # install pandas
+      - run: pip install pandas
       - run: python clean_script.py
+      
       - run: aws s3 cp cleaned_data.csv s3://staged-for-training
     
     
